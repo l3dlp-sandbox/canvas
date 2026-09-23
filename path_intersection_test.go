@@ -1403,6 +1403,7 @@ func TestPathRelate(t *testing.T) {
 		{"L10 0", "M1 0L11 0", relOverlaps, []Point{{1, 0}, {10, 0}}},
 		{"L10 0", "L10 0", relEquals, []Point{}},
 		{"L10 0", "M0 1L0 0L10 0L10 1", relIntersects | relWithin | relCoveredBy, []Point{ /*{0, 0},*/ {10, 0}}}, // TODO
+		{"L10 0L10 10L0 10z", "M1 1L9 8", relContains, []Point{}},
 
 		// intersection on one segment endpoint
 		{"L0 15", "M5 0L0 5L5 5", relOverlaps, []Point{{0, 5}}}, // unexpected, should be relTouches

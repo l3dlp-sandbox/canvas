@@ -26,6 +26,11 @@ func TestPolyline(t *testing.T) {
 	test.That(t, !(&Polyline{}).Add(10, 0).Add(20, 10).Add(10, 10).Add(10, 0).Interior(5, 5, EvenOdd))
 }
 
+func TestPolylineCentroid(t *testing.T) {
+	test.T(t, (&Polyline{}).Add(0, 0).Add(10, 0).Add(5, 10).Add(0, 0).Centroid(), Point{5.0, 10.0 / 3.0})
+	test.T(t, (&Polyline{}).Add(0, 0).Add(5, 10).Add(10, 0).Add(0, 0).Centroid(), Point{5.0, 10.0 / 3.0})
+}
+
 func TestPolylineSmoothen(t *testing.T) {
 	test.T(t, (&Polyline{}).Smoothen(), MustParseSVGPath(""))
 	test.T(t, (&Polyline{}).Add(0, 0).Add(10, 0).Smoothen(), MustParseSVGPath("L10 0"))

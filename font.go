@@ -3,7 +3,6 @@ package canvas
 import (
 	"fmt"
 	"image/color"
-	"log"
 	"math"
 	"os"
 	"reflect"
@@ -180,13 +179,6 @@ var systemFonts = struct {
 	sync.Mutex
 }{}
 
-// FindLocalFont finds the path to a font from the system's fonts.
-func FindLocalFont(name string, style FontStyle) string {
-	log.Println("WARNING: github.com/tdewolff/canvas/FindLocalFont is deprecated, please use github.com/tdewolff/canvas/FindSystemFont") // TODO: remove
-	filename, _ := FindSystemFont(name, style)
-	return filename
-}
-
 // CacheSystemFonts will write and load the list of system fonts to the given filename. It scans the given directories for fonts, leave nil to use github.com/tdewolff/font/DefaultFontDirs().
 func CacheSystemFonts(filename string, dirs []string) error {
 	var fonts *font.SystemFonts
@@ -233,12 +225,6 @@ type Font struct {
 	shaper     text.Shaper
 	variations string
 	features   string
-}
-
-// LoadLocalFont loads a font from the system's fonts.
-func LoadLocalFont(name string, style FontStyle) (*Font, error) {
-	log.Println("WARNING: github.com/tdewolff/canvas/LoadLocalFont is deprecated, please use github.com/tdewolff/canvas/LoadSystemFont") // TODO: remove
-	return LoadSystemFont(name, style)
 }
 
 // LoadSystemFont loads a font from the system's fonts.
@@ -393,18 +379,6 @@ func (family *FontFamily) SetFeatures(features string) {
 	for _, font := range family.fonts {
 		font.SetFeatures(features)
 	}
-}
-
-// LoadLocalFont loads a font from the system's fonts.
-func (family *FontFamily) LoadLocalFont(name string, style FontStyle) error {
-	log.Println("WARNING: github.com/tdewolff/canvas/FontFamily.LoadLocalFont is deprecated, please use github.com/tdewolff/canvas/FontFamily.LoadSystemFont") // TODO: remove
-	return family.LoadSystemFont(name, style)
-}
-
-// MustLoadLocalFont loads a font from the system's fonts and panics on error.
-func (family *FontFamily) MustLoadLocalFont(name string, style FontStyle) {
-	log.Println("WARNING: github.com/tdewolff/canvas/FontFamily.MustLoadLocalFont is deprecated, please use github.com/tdewolff/canvas/FontFamily.MustLoadSystemFont") // TODO: remove
-	family.MustLoadSystemFont(name, style)
 }
 
 // LoadSystemFont loads a font from the system's fonts.
@@ -765,12 +739,6 @@ func (face *FontFace) toPath(glyphs []text.Glyph, ppem uint16) (*Path, float64) 
 		p = p.Transform(Identity.Shear(face.FauxItalic, 0.0))
 	}
 	return p, face.MmPerEm * float64(x)
-}
-
-// Decorate will return the decoration path over a given width in millimeters.
-func (face *FontFace) Decorate(width float64) *Path {
-	fmt.Println("DEPRECATED: FontFace.Decorate is removed in favour of FontFace.RenderTo")
-	return &Path{}
 }
 
 func (face *FontFace) RenderTo(r Renderer, m Matrix, s string, resolution Resolution) {

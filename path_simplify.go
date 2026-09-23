@@ -2,6 +2,7 @@ package canvas
 
 import (
 	"fmt"
+	"log"
 	"math"
 )
 
@@ -296,7 +297,7 @@ func (q heapVW) down(i0, n int) bool {
 // FastClip removes all segments that are completely outside the given clipping rectangle. To ensure that the removal doesn't cause a segment to cross the rectangle from the outside, it keeps points that cross at least two lines to infinity along the rectangle's edges. It doesn't clip crossing segments at the boundary like Path.Clip.
 // NOTE: this is twice as slow as Path.Clip!
 func (p *Path) FastClip(x0, y0, x1, y1 float64) *Path {
-	fmt.Println("WARNING: deprecated Path.FastClip, use Path.Clip")
+	log.Println("WARNING: github.com/tdewolff/canvas/Path.FastClip is deprecated, please use Path.Clip")
 	return p.Clip(x0, y0, x1, y1)
 
 	if x1 < x0 {

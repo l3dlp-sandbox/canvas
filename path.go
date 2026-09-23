@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/gob"
 	"fmt"
-	"log"
 	"math"
 	"sort"
 	"strings"
@@ -1971,95 +1970,6 @@ func (p *Path) Reverse() *Path {
 		q.d = append(q.d, CloseCmd, first.X, first.Y, CloseCmd)
 	}
 	return q
-}
-
-// Segment is a path command.
-type Segment struct {
-	Cmd        float64
-	Start, End Point
-	args       [4]float64
-}
-
-// CP1 returns the first control point for quadratic and cubic Béziers.
-func (seg Segment) CP1() Point {
-	return Point{seg.args[0], seg.args[1]}
-}
-
-// CP2 returns the second control point for cubic Béziers.
-func (seg Segment) CP2() Point {
-	return Point{seg.args[2], seg.args[3]}
-}
-
-// Arc returns the arguments for arcs (rx,ry,rot,large,sweep).
-func (seg Segment) Arc() (float64, float64, float64, bool, bool) {
-	large, sweep := toArcFlags(seg.args[3])
-	return seg.args[0], seg.args[1], seg.args[2], large, sweep
-}
-
-// Segments returns the path segments as a slice of segment structures.
-func (p *Path) Segments() []Segment {
-	log.Println("WARNING: github.com/tdewolff/canvas/Path.Segments is deprecated, please use github.com/tdewolff/canvas/Path.Scanner") // TODO: remove
-
-	segs := []Segment{}
-	var start, end Point
-	for i := 0; i < len(p.d); {
-		cmd := p.d[i]
-		switch cmd {
-		case MoveToCmd:
-			end = Point{p.d[i+1], p.d[i+2]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-			})
-		case LineToCmd:
-			end = Point{p.d[i+1], p.d[i+2]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-			})
-		case QuadToCmd:
-			cp := Point{p.d[i+1], p.d[i+2]}
-			end = Point{p.d[i+3], p.d[i+4]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-				args:  [4]float64{cp.X, cp.Y, 0.0, 0.0},
-			})
-		case CubeToCmd:
-			cp1 := Point{p.d[i+1], p.d[i+2]}
-			cp2 := Point{p.d[i+3], p.d[i+4]}
-			end = Point{p.d[i+5], p.d[i+6]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-				args:  [4]float64{cp1.X, cp1.Y, cp2.X, cp2.Y},
-			})
-		case ArcToCmd:
-			rx, ry, phi := p.d[i+1], p.d[i+2], p.d[i+3]*180.0/math.Pi
-			flags := p.d[i+4]
-			end = Point{p.d[i+5], p.d[i+6]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-				args:  [4]float64{rx, ry, phi, flags},
-			})
-		case CloseCmd:
-			end = Point{p.d[i+1], p.d[i+2]}
-			segs = append(segs, Segment{
-				Cmd:   cmd,
-				Start: start,
-				End:   end,
-			})
-		}
-		start = end
-		i += cmdLen(cmd)
-	}
-	return segs
 }
 
 ////////////////////////////////////////////////////////////////

@@ -62,8 +62,9 @@ import (
 	"github.com/go-fonts/latin-modern/lmsansdemicond10regular"
 	"github.com/go-fonts/latin-modern/lmsansquot8oblique"
 	"github.com/go-fonts/latin-modern/lmsansquot8regular"
-	canvasFont "github.com/tdewolff/font"
 	"star-tex.org/x/tex"
+
+	canvasFont "github.com/tdewolff/font"
 )
 
 var preamble = `\nopagenumbers

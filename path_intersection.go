@@ -220,22 +220,17 @@ func (p *Path) Div(q *Path) *Path {
 	return bentleyOttmann(p.Split(), q.Split(), opDIV, NonZero).Merge()
 }
 
-// Div is the same as Path.DivideBy, but faster if paths are already split. Each resulting
-// path is a single filling path followed by its holes as subpaths.
+// Div is the same as Path.DivideBy, but faster if paths are already split. Each resulting path is a single filling path followed by its holes as subpaths.
 func (ps Paths) Div(qs Paths) Paths {
 	return bentleyOttmann(ps, qs, opDIV, NonZero)
 }
 
-// Relate returns the spatial relation as defined by DE-9IM between the two paths as well as the intersections between both. It is
-// faster if you need to check multiple spatial relations and/or retrieve the intersections.
+// Relate returns the spatial relation as defined by DE-9IM between the two paths as well as the intersections between both. It is faster if you need to check multiple spatial relations and/or retrieve the intersections.
 func (p *Path) Relate(q *Path) (Relation, []Point) {
 	return relate(p.Split(), q.Split(), true)
 }
 
-// Intersections returns a list of points of all intersections of path p with q. The intersection can be tangent (touch) or secant
-// (cross). If the two paths are partially coincident it will return an intersection at the start and end. Equal paths have no
-// intersections. If q is nil it returns the intersections of p with itself. Intersections are sorted from left-to-right, and
-// otherwise from bottom-to-top.
+// Intersections returns a list of points of all intersections of path p with q. The intersection can be tangent (touch) or secant (cross). If the two paths are partially coincident it will return an intersection at the start and end. Equal paths have no intersections. If q is nil it returns the intersections of p with itself. Intersections are sorted from left-to-right, and otherwise from bottom-to-top.
 func (p *Path) Intersections(q *Path) []Point {
 	_, zs := relate(p.Split(), q.Split(), true)
 	return zs
@@ -248,16 +243,13 @@ func (p *Path) Touches(q *Path) bool {
 	return rel.Intersects()
 }
 
-// Overlaps returns true if the interiors of p and q have at least one point in common. Either
-// they have a secant intersection, one path in contained in the other, or both paths are equal.
-// This is different from DE-9IM's definition of Overlaps.
+// Overlaps returns true if the interiors of p and q have at least one point in common. Either they have a secant intersection, one path in contained in the other, or both paths are equal. This is different from DE-9IM's definition of Overlaps.
 func (p *Path) Overlaps(q *Path) bool {
 	rel, _ := relate(p.Split(), q.Split(), false)
 	return (rel & 0x01) != 0
 }
 
-// Contains returns true if the interior of p contains the interior of q. Equal shapes contain
-// each other. If p contains q, then q is within p. This tests DE-9IM's Covers relation.
+// Contains returns true if the interior of p contains the interior of q. Equal shapes contain each other. If p contains q, then q is within p. This tests DE-9IM's Covers relation.
 func (p *Path) Contains(q *Path) bool {
 	rel, _ := relate(p.Split(), q.Split(), false)
 	return rel.Covers()
@@ -1212,7 +1204,7 @@ func addIntersections(zs []Point, queue *SweepEvents, event, a, b *SweepPoint) b
 			//bMaxY := math.Max(b.Y, b.other.Y)
 			//if a.other.X < z.X || b.other.X < z.X || aMaxY < z.Y || bMaxY < z.Y {
 			//	// TODO: handle/check this case, apparently a and b are both _below_ the event
-			//	fmt.Println("WARNING: intersection moved outside of segment:", zold, "=>", z)
+			//	log.Println("WARNING: intersection moved outside of segment:", zold, "=>", z)
 			//}
 		}
 	}
@@ -1447,7 +1439,7 @@ func (squares *toleranceSquares) Add(x float64, event *SweepPoint, refNode *Swee
 //
 //	sorted := sort.IsSorted(eventSliceH(*events))
 //	if !sorted {
-//		fmt.Println("WARNING: H not sorted")
+//		log.Println("WARNING: H not sorted")
 //		for i, event := range *events {
 //			fmt.Println(i, event, event.Angle())
 //		}
@@ -1456,7 +1448,7 @@ func (squares *toleranceSquares) Add(x float64, event *SweepPoint, refNode *Swee
 //	copy((*events)[lo+1:], (*events)[lo:])
 //	(*events)[lo] = event
 //	if sorted && !sort.IsSorted(eventSliceH(*events)) {
-//		fmt.Println("ERROR: not sorted after inserting into events:", *events)
+//		log.Println("ERROR: not sorted after inserting into events:", *events)
 //	}
 //}
 
